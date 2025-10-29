@@ -4,8 +4,8 @@ import "time"
 
 type Stock struct {
 	Symbol    string    `json:"symbol"`
-	Price     string    `json:"price"`
-	Volume    string    `json:"volume"`
+	Price     float64   `json:"price"`
+	Volume    int       `json:"volume"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
