@@ -12,8 +12,8 @@ import (
 // Tags are used to map environment variables to struct fields.
 type Config struct {
 	// Environment string `env:"ENVIRONMENT" envDefault:"development"`
-	Server ServerConfig
-	// Database    DatabaseConfig
+	Server   ServerConfig
+	Database DatabaseConfig
 	// JWT         JWTConfig
 }
 
@@ -24,13 +24,13 @@ type ServerConfig struct {
 }
 
 // DatabaseConfig holds database connection settings
-// type DatabaseConfig struct {
-// 	Host     string `env:"DB_HOST,required"`
-// 	Port     int    `env:"DB_PORT,required"`
-// 	User     string `env:"DB_USER,required"`
-// 	Password string `env:"DB_PASS,required"`
-// 	Name     string `env:"DB_NAME,required"`
-// }
+type DatabaseConfig struct {
+	Host     string `env:"DB_HOST,required"`
+	Port     int    `env:"DB_PORT,required"`
+	User     string `env:"DB_USER,required"`
+	Password string `env:"DB_PASS,required"`
+	Name     string `env:"DB_NAME,required"`
+}
 
 // JWTConfig holds settings for JWT (JSON Web Tokens)
 // type JWTConfig struct {
