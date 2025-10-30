@@ -10,7 +10,12 @@ import (
 )
 
 func main() {
-	cfg, _ := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatal("Error while loading env:", err)
+	}
+	config.ConnectDB()
+
 	repo := repository.NewInMemoryStockRepo()
 	stockHandler := handlers.NewStockHandler(repo)
 
