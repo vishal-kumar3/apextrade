@@ -14,13 +14,21 @@ func main() {
 	if err != nil {
 		log.Fatal("Error while loading env:", err)
 	}
-	config.ConnectDB()
+	db := config.ConnectDB()
+
+	orderRepo := repository.NewPostgresOrderRepo(db)
+	orderHandler := handlers.NewOrderHandler(orderRepo)
 
 	repo := repository.NewInMemoryStockRepo()
 	stockHandler := handlers.NewStockHandler(repo)
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
+
+	apiV1 := r.Group("/api/v1")
+
+	// Order routes
+	orderHandler.RegisterRoutes(apiV1)
 
 	stocks := r.Group("/stocks")
 	stocks.GET("", stockHandler.GetAllStocks)

@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/apextrade/config"
 	"github.com/apextrade/internal/models"
 	"gorm.io/gorm"
 )
@@ -9,8 +10,8 @@ type PostgresOrderRepo struct {
 	db *gorm.DB
 }
 
-func NewPostgresOrderRepo(d *gorm.DB) *PostgresOrderRepo {
-	return &PostgresOrderRepo{db: d}
+func NewPostgresOrderRepo(d *config.DB) *PostgresOrderRepo {
+	return &PostgresOrderRepo{db: d.DB}
 }
 
 func (r *PostgresOrderRepo) CreateOrder(o *models.Order) error {
