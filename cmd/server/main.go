@@ -5,6 +5,7 @@ import (
 
 	"github.com/apextrade/config"
 	"github.com/apextrade/internal/handlers"
+	"github.com/apextrade/internal/models"
 	"github.com/apextrade/internal/repository"
 	"github.com/gin-gonic/gin"
 )
@@ -19,21 +20,27 @@ func main() {
 	orderRepo := repository.NewPostgresOrderRepo(db)
 	orderHandler := handlers.NewOrderHandler(orderRepo)
 
-	repo := repository.NewInMemoryStockRepo()
-	stockHandler := handlers.NewStockHandler(repo)
+	stockRepo := repository.NewPostgresStockRepo(db)
+	stockHandler := handlers.NewStockHandler(stockRepo)
+
+	seedStocks := []models.Stock{
+		{Symbol: "AAPL", Price: 150.25, Volume: 1000000},
+		{Symbol: "GOOG", Price: 2800.50, Volume: 500000},
+	}
+	for _, s := range seedStocks {
+		if err := stockRepo.CreateOrUpdate(&s); err != nil {
+			log.Printf("Seed warning: %v", err)
+		}
+	}
 
 	gin.SetMode(gin.ReleaseMode)
 	r := gin.Default()
 
 	apiV1 := r.Group("/api/v1")
 
-	// Order routes
+	// API Routes
 	orderHandler.RegisterRoutes(apiV1)
-
-	stocks := r.Group("/stocks")
-	stocks.GET("", stockHandler.GetAllStocks)
-	stocks.GET("/:symbol", stockHandler.GetStock)
-	stocks.POST("", stockHandler.CreateStock)
+	stockHandler.RegisterRoutes(apiV1)
 
 	log.Printf("ApexTrade server on port %s – Trade smart!", cfg.Server.Port)
 	if err := r.Run(":" + cfg.Server.Port); err != nil {
